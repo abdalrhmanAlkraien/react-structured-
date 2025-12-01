@@ -1,0 +1,35 @@
+.navbar {
+  height: 60px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userName {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.logoutButton {
+  background: var(--danger);
+  border: none;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.logoutButton:hover {
+  background: #dc2626;
+}
