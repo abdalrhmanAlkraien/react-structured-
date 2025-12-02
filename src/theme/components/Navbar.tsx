@@ -1,5 +1,5 @@
-import { useAuth } from "../context/auth/useAuth";
-import styles from "./Navbar.module.css";
+import { useAuth } from "../../context/auth/useAuth";
+import styles from "../style/Navbar.module.css";
 
 export function Navbar() {
       const { user, logout } = useAuth();

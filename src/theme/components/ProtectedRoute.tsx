@@ -1,7 +1,7 @@
 import { type JSX } from "react";
 import { Navigate } from "react-router-dom";
 import { AppLayout } from "./AppLayout";
-import { useAuth } from "../context/auth/useAuth";
+import { useAuth } from "../../context/auth/useAuth";
 
 interface Props {
   children: JSX.Element;

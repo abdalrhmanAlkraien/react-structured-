@@ -1,6 +1,6 @@
 import { Navbar } from "./Navbar";
 import { Sidebar } from "./Sidebar";
-import styles from "./AppLayout.module.css"
+import styles from "../style/AppLayout.module.css"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
 
