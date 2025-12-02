@@ -9,7 +9,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <Sidebar />
         <div className={styles.content}>
             <Navbar />
-            <main className={styles.main}>{children}</main>
+        <main className={styles.main}>{children}</main>
         </div>
     </div>
     )

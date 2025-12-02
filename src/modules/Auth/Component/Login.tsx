@@ -1,16 +1,27 @@
 import React, { useState } from "react";
 import styles from "../Style/Login.module.css";
+import { useAuth } from "../../../context/auth/useAuth";
 
 export function Login() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const {login} = useAuth();
+
 
     const handleSubmit = (e: React.FormEvent)=> {
 
         e.preventDefault()
 
         // Call login api
+
+        login({
+            token: "cxcx",
+            user: {
+                username: "Sbd"
+            }
+        });
+
     };
 
     return (

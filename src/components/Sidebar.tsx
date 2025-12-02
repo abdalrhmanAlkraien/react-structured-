@@ -4,7 +4,7 @@ import styles from "./Sidebar.module.css";
 export function Sidebar() {
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>MyApp</div>
+      <div className={styles.logo}>NexAi</div>
 
       <nav>
         <NavLink
@@ -17,7 +17,7 @@ export function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/users"
+          to="/dashboard1"
           className={({ isActive }) =>
             isActive ? styles.activeLink : styles.link
           }
