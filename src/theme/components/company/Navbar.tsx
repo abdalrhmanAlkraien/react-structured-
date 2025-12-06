@@ -1,7 +1,7 @@
-import { useAuth } from "../../context/auth/useAuth";
-import styles from "../style/Navbar.module.css";
+import { useAuth } from "../../../context/auth/useAuth.ts";
+import styles from "../../style/Navbar.module.css";
 
-export function Navbar() {
+export function CompanyNavbar() {
       const { user, logout } = useAuth();
 
 
@@ -10,7 +10,7 @@ export function Navbar() {
       <div className={styles.left}></div>
 
       <div className={styles.right}>
-        <span className={styles.userName}>{user.username}</span>
+        <span className={styles.userName}>{user?.username}</span>
 
         <button className={styles.logoutButton} onClick={logout}>
           Logout

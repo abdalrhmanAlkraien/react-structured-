@@ -1,36 +1,42 @@
-import { createContext, useEffect, useState, type ReactNode } from "react";
-import type { LoginPayload, LoginStatus } from "./types";
-import { useNavigate } from "react-router-dom";
+import {createContext, type ReactNode, useEffect, useState} from "react";
+import type {LoginPayload, LoginStatus} from "./types";
+import {useNavigate} from "react-router-dom";
+import {getHomeRedirect} from "../../lib/RouteHelper.ts";
 
 interface AuthContextType extends LoginStatus {
   login: (payload: LoginPayload) => void;
   logout: () => void;
+  loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   token: null,
   user: null,
-  login: () => {},
-  logout: () => {}
+  login: () => {
+  },
+  logout: () => {
+  },
+  loading: true
 });
 
-
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({children}: { children: ReactNode }) {
 
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-    // Load token from localStorage on page refresh
+  // Load token from localStorage on page refresh
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
     const storedUser = localStorage.getItem("user");
 
     if (storedToken) setToken(storedToken);
     if (storedUser) setUser(JSON.parse(storedUser));
+    setLoading(false);
   }, []);
 
-    const login = (payload: LoginPayload) => {
+  const login = (payload: LoginPayload) => {
     localStorage.setItem("accessToken", payload.token);
     if (payload.user) {
       localStorage.setItem("user", JSON.stringify(payload.user));
@@ -38,23 +44,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setToken(payload.token);
 
-  navigate("/dashboard", { replace: true });
+    navigate(getHomeRedirect(payload.user.roles), {replace: true});
   };
 
-    const logout = () => {
+  const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
 
     setToken(null);
     setUser(null);
+    setLoading(true);
 
     window.location.href = "/login";
   };
 
-    return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  return (
+      <AuthContext.Provider value={{token, user, login, logout, loading}}>
+        {children}
+      </AuthContext.Provider>
   );
 
 }

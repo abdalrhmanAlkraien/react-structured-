@@ -12,7 +12,7 @@ export interface UserData {
   roles: string[];
   companyId: number;
   companyName: string;
-}}
+}
 
 export interface LoginResponse {
 
@@ -23,11 +23,11 @@ export interface LoginResponse {
   user: UserData;
 }
 
-interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
+// interface ApiResponse<T> {
+//   success: boolean;
+//   message: string;
+//   data: T;
+// }
 
 export interface LoginStatus {
     token: string | null;
