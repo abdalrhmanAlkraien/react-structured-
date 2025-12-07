@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import styles from "./style/DynamicFilter.module.css";
-import {api} from "../../config/axios.config.ts";
-import type {FilterField} from "./type/filter.ts";
+import { api } from "../../config/axios.config.ts";
+import type { FilterField } from "./type/filter.ts";
 
 interface Props {
     fields: FilterField[];
-    onChange: (filters: Record<string, any>) => void;
+    onChange: (filters: Record<string, any>) => void; // called when user clicks Apply Filter
 }
 
 export function DynamicFilter({ fields, onChange }: Props) {
     const [values, setValues] = useState<Record<string, any>>({});
-    const [options, setOptions] = useState<Record<string, any[]>>({});
-    const [apiOptions, setApiOptions] = useState({});
+    const [apiOptions, setApiOptions] = useState<Record<string, any[]>>({});
 
-    // Load initial API select options
+    // Load initial API select options (countries)
     useEffect(() => {
         fields.forEach(async (field) => {
             if (field.type === "api-select" && !field.dependsOn) {
@@ -23,15 +22,14 @@ export function DynamicFilter({ fields, onChange }: Props) {
         });
     }, []);
 
-    // Load dependent (city) when parent changes (country)
+    // Load dependent (cities) when parent changes (country)
     useEffect(() => {
         fields.forEach(async (field) => {
-            if (field.dependsOn && values[field.dependsOn]) {
+            if (field.type === "api-select" && field.dependsOn && values[field.dependsOn]) {
                 const url = field.api.replace(
                     "{countryId}",
                     values[field.dependsOn]
                 );
-
                 const res = await api.get(url);
                 setApiOptions((prev) => ({ ...prev, [field.name]: res.data }));
             }
@@ -39,20 +37,31 @@ export function DynamicFilter({ fields, onChange }: Props) {
     }, [values]);
 
     // ----------------------
-    // Handle input change
+    // Handle input change (NO API CALL HERE)
     // ----------------------
     function handleChange(name: string, value: any) {
         const newState = { ...values, [name]: value };
 
-        // Reset dependent fields automatically
+        // Reset dependent fields automatically (city when country changes)
         fields.forEach((field) => {
             if (field.dependsOn === name) {
-                newState[field.name] = ""; // reset city when country changes
+                newState[field.name] = "";
             }
         });
 
         setValues(newState);
-        onChange(newState);
+    }
+
+    // ----------------------
+    // Apply Filter button
+    // ----------------------
+    function handleApplyFilter() {
+        onChange(values); // parent will use these values to refetch data
+    }
+
+    function handleReset() {
+        setValues({});
+        onChange({});
     }
 
     // ----------------------
@@ -108,7 +117,11 @@ export function DynamicFilter({ fields, onChange }: Props) {
                     />
                 );
 
-            case "api-select":
+            case "api-select": {
+                const opts = apiOptions[field.name] || [];
+                const valueKey = field.valueKey || "id";
+                const labelKey = field.labelKey || "name";
+
                 return (
                     <select
                         key={field.name}
@@ -117,16 +130,17 @@ export function DynamicFilter({ fields, onChange }: Props) {
                         disabled={field.dependsOn && !values[field.dependsOn]}
                     >
                         <option value="">{field.label}</option>
-                        {(options[field.name] || []).map((opt) => (
+                        {opts.map((opt: any) => (
                             <option
-                                key={opt.value || opt.id}
-                                value={opt.value || opt.id}
+                                key={opt[valueKey]}
+                                value={opt[valueKey]}
                             >
-                                {opt.label || opt.name}
+                                {opt[labelKey]}
                             </option>
                         ))}
                     </select>
                 );
+            }
 
             default:
                 return null;
@@ -136,6 +150,22 @@ export function DynamicFilter({ fields, onChange }: Props) {
     return (
         <div className={styles.filterContainer}>
             {fields.map((field) => renderField(field))}
+
+            <button
+                type="button"
+                className={styles.searchButton}
+                onClick={handleApplyFilter}
+            >
+                Apply Filter
+            </button>
+
+            <button
+                className={styles.resetButton}
+                type="button"
+                onClick={handleReset}
+            >
+                Reset
+            </button>
         </div>
     );
 }

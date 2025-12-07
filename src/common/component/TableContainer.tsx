@@ -7,12 +7,14 @@ interface TableContainerProps<T> {
     columns: Column<T>[];
     fetchData: (page: number, size: number) => Promise<any>;
     pageSize?: number;
+    reloadFlag: number
 }
 
 export function TableContainer<T>({
                                       columns,
                                       fetchData,
                                       pageSize = 20,
+                                      reloadFlag
                                   }: TableContainerProps<T>) {
 
     const [rows, setRows] = useState<T[]>([]);
@@ -22,7 +24,7 @@ export function TableContainer<T>({
 
     useEffect(() => {
         load();
-    }, [page]);
+    }, [page, reloadFlag]);
 
     async function load() {
         setLoading(true);

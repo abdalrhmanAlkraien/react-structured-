@@ -3,6 +3,8 @@ import {TableContainer} from "../../../../common/component/TableContainer.tsx";
 import {useNavigate} from "react-router-dom";
 import {ActionButtons} from "../../../../common/component/ActionButtons.tsx";
 import {useState} from "react";
+import {useEffect} from "react";
+
 import {DynamicFilter} from "../../../../common/component/DynamicFilter.tsx";
 import type {FilterField} from "../../../../common/component/type/filter.ts";
 import {getCompanies} from "../service/companyService.ts";
@@ -20,6 +22,11 @@ export function CompanyListComponent() {
 
     const navigate = useNavigate();
     const [activeFilters, setActiveFilters] = useState({});
+    const [reloadFlag, setReloadFlag] = useState(0); // <-- force reload
+    
+        useEffect(() => {
+        setReloadFlag(prev => prev + 1);
+    }, [activeFilters]);
 
     const filterFields: FilterField[] = [
         { type: "text", name: "companyName", label: "Company Name" },
@@ -42,9 +49,6 @@ export function CompanyListComponent() {
             valueKey: "id",
             labelKey: "name",
         },
-
-        // { type: "api-select", name: "country", label: "Country", api: "/countries" },
-        // { type: "api-select", name: "city", label: "City", api: "/countries/{country}/cities", dependsOn: "country" },
         { type: "date", name: "subscribedDateFrom", label: "Subscribed From" },
         { type: "date", name: "subscribedDateTo", label: "Subscribed To" }
     ];
@@ -67,20 +71,23 @@ export function CompanyListComponent() {
         }
     ];
 
-    // // Pass only what's needed to the TableContainer
     const fetchCompanies = (page: number, size: number) => {
-        return getCompanies(page, size);
+        return getCompanies(page, size, activeFilters); // pass filters to service
     };
 
     return (
         <div>
             <h1>Companies</h1>
 
-            <DynamicFilter fields={filterFields} onChange={setActiveFilters} />
+            <DynamicFilter
+             key={reloadFlag}      
+             fields={filterFields}
+             onChange={setActiveFilters} />
 
             <TableContainer<CompanyRow>
                 columns={columns}
                 fetchData={fetchCompanies}
+                reloadFlag= {reloadFlag}
             />
         </div>
     );
