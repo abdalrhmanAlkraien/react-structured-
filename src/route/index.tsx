@@ -9,7 +9,7 @@ import {CompanyPageList} from "../modules/platform/company/page/CompanyPageList.
 import {CreateCompanyPage} from "../modules/platform/company/page/CreateCompanyPage.tsx";
 import {CompanyDetailsPage} from "../modules/platform/company/page/CompanyDetailsPage.tsx";
 import {UpdateCompanyPage} from "../modules/platform/company/page/UpdateCompanyPage.tsx";
-import {getHomeRedirect} from "../lib/RouteHelper.ts";
+import {getHomeRedirect} from "../common/lib/RouteHelper.ts";
 
 export function AppRoutes() {
 

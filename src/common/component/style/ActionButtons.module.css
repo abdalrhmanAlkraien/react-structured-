@@ -1,0 +1,35 @@
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    padding: 6px;
+    border-radius: 6px;
+    transition: 0.2s;
+    font-size: 18px;
+}
+
+.iconButton:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.iconButtonDelete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--danger);
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 18px;
+}
+
+.iconButtonDelete:hover {
+    background: rgba(239, 68, 68, 0.15);
+}

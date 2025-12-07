@@ -4,7 +4,7 @@ import styles from "../style/AppLayout.module.css"
 import {useAuth} from "../../context/auth/useAuth.ts";
 import {PlatformSidebar} from "./platform/Sidebar.tsx";
 import {PlatformNavbar} from "./platform/Navbar.tsx";
-import {isCompanyAdmin, isPlatformAdmin} from "../../lib/roleHelpers.ts";
+import {isCompanyAdmin, isPlatformAdmin} from "../../common/lib/roleHelpers.ts";
 
 export function AppLayout({children}: { children: React.ReactNode }) {
 

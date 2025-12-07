@@ -1,7 +1,7 @@
 import {useNavigation} from "react-router-dom";
 import {useAuth} from "../../../context/auth/useAuth.ts";
 import styles from "../style/ForbiddenPage.module.css";
-import {getHomeRedirect} from "../../../lib/RouteHelper.ts";
+import {getHomeRedirect} from "../../../common/lib/RouteHelper.ts";
 
 export function ForbiddenPage() {
 

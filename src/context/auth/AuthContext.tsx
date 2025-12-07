@@ -1,7 +1,7 @@
 import {createContext, type ReactNode, useEffect, useState} from "react";
 import type {LoginPayload, LoginStatus} from "./types";
 import {useNavigate} from "react-router-dom";
-import {getHomeRedirect} from "../../lib/RouteHelper.ts";
+import {getHomeRedirect} from "../../common/lib/RouteHelper.ts";
 
 interface AuthContextType extends LoginStatus {
   login: (payload: LoginPayload) => void;

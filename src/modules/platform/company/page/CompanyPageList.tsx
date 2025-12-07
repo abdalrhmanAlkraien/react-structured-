@@ -1,7 +1,9 @@
+import {CompanyListComponent} from "../component/CompanyListComponent.tsx";
+
 export function CompanyPageList() {
     return (
         <div>
-            <h1>Company List</h1>
+            <CompanyListComponent/>
         </div>
     )
 }
