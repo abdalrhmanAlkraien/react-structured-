@@ -77,8 +77,6 @@ export function CompanyListComponent() {
 
     return (
         <div>
-            <h1>Companies</h1>
-
             <DynamicFilter
              key={reloadFlag}      
              fields={filterFields}

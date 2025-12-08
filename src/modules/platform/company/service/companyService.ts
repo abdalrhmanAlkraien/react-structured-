@@ -34,3 +34,8 @@ export async function getCompanyDetails(id: string) {
     console.log(res.data);
     return res.data;
 }
+
+export async function registerCompany(payload: any) {
+    const response = await api.post("/register", payload);
+    return response.data;
+}
