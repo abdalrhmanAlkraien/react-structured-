@@ -1,0 +1,86 @@
+.container {
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.headerIcon {
+    font-size: 28px;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.card {
+    background: var(--surface);
+    padding: 24px;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+}
+
+.gridItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.value {
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ICON TYPES — controlled by name passed in props */
+
+.icon-company::before {
+    content: "🏢";
+}
+
+.icon-user::before {
+    content: "👤";
+}
+
+.icon-plan::before {
+    content: "📦";
+}
+
+.icon-security::before {
+    content: "🔒";
+}
+
+.icon-default::before {
+    content: "📄";
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./style/DynamicFilter.module.css";
-import { api } from "../../config/axios.config.ts";
+import { api } from "../../../config/axios.config.ts";
 import type { FilterField } from "./type/filter.ts";
 
 interface Props {
@@ -151,21 +151,21 @@ export function DynamicFilter({ fields, onChange }: Props) {
         <div className={styles.filterContainer}>
             {fields.map((field) => renderField(field))}
 
-            <button
-                type="button"
-                className={styles.searchButton}
-                onClick={handleApplyFilter}
-            >
-                Apply Filter
-            </button>
+            <div className={styles.buttons}>
+                <button
+                    className="btn btn-primary btn-md"
+                    onClick={handleApplyFilter}
+                >
+                    Apply Filter
+                </button>
 
-            <button
-                className={styles.resetButton}
-                type="button"
-                onClick={handleReset}
-            >
-                Reset
-            </button>
+                <button
+                    className="btn btn-outline btn-md"
+                    onClick={handleReset}
+                >
+                    Reset
+                </button>
+            </div>
         </div>
     );
 }

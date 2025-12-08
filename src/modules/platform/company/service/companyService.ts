@@ -28,3 +28,9 @@ export async function getCompanies(
     const response = await api.get(`/companies?${query}`);
     return response.data; // contains content, totalPages, etc.
 }
+
+export async function getCompanyDetails(id: string) {
+    const res = await api.get(`/companies/${id}`);
+    console.log(res.data);
+    return res.data;
+}

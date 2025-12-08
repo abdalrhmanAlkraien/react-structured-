@@ -1,12 +1,12 @@
-import type {Column} from "../../../../common/component/DataTable.tsx";
-import {TableContainer} from "../../../../common/component/TableContainer.tsx";
+import type {Column} from "../../../../common/component/table/DataTable.tsx";
+import {TableContainer} from "../../../../common/component/table/TableContainer.tsx";
 import {useNavigate} from "react-router-dom";
-import {ActionButtons} from "../../../../common/component/ActionButtons.tsx";
+import {ActionButtons} from "../../../../common/component/table/ActionButtons.tsx";
 import {useState} from "react";
 import {useEffect} from "react";
 
-import {DynamicFilter} from "../../../../common/component/DynamicFilter.tsx";
-import type {FilterField} from "../../../../common/component/type/filter.ts";
+import {DynamicFilter} from "../../../../common/component/table/DynamicFilter.tsx";
+import type {FilterField} from "../../../../common/component/table/type/filter.ts";
 import {getCompanies} from "../service/companyService.ts";
 
 

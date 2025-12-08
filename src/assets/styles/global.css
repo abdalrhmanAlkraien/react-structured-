@@ -67,3 +67,77 @@ select {
   border-radius: var(--radius);
   box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
+
+/* ------------------------------
+   Global Button System
+   ------------------------------ */
+
+.btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+/* SECONDARY BUTTON */
+.btn-secondary {
+  background: var(--secondary);
+  color: white;
+}
+.btn-secondary:hover {
+  background: var(--secondary-light);
+}
+
+/* OUTLINE BUTTON */
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+.btn-outline:hover {
+  background: var(--primary-light);
+}
+
+/* DANGER BUTTON */
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+.btn-danger:hover {
+  background: #d93737;
+}
+
+/* SMALL */
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* LARGE */
+.btn-lg {
+  padding: 14px 20px;
+  font-size: 15px;
+}
+
+/* FULL WIDTH */
+.btn-block {
+  width: 100%;
+}
+
+.btn-md {
+  padding: 12px 20px; /* SAME AS OLD applyButton + resetButton */
+  font-size: 14px;
+  font-weight: 500;
+}
