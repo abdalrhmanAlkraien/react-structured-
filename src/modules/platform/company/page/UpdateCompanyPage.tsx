@@ -1,7 +1,11 @@
+import { UpdateCompanyComponent } from "../component/UpdateCompanyComponent"
+
 export function UpdateCompanyPage() {
+    
+    console.log("update page")
     return (
         <div>
-            <h1>Update Company</h1>
+           <UpdateCompanyComponent/>
         </div>
     )
 }
