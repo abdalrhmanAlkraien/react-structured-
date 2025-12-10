@@ -10,7 +10,7 @@ export interface UserData {
   email: string;
   fullname: string;
   roles: string[];
-  companyId: number;
+  companyId: string;
   companyName: string;
 }
 

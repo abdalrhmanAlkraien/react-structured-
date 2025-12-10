@@ -10,6 +10,14 @@ import {CreateCompanyPage} from "../modules/platform/company/page/CreateCompanyP
 import {CompanyDetailsPage} from "../modules/platform/company/page/CompanyDetailsPage.tsx";
 import {UpdateCompanyPage} from "../modules/platform/company/page/UpdateCompanyPage.tsx";
 import {getHomeRedirect} from "../common/lib/RouteHelper.ts";
+import {CustomerListPage} from "../modules/company/customer/page/CustomerListPage.tsx";
+import {CustomerCreatePage} from "../modules/company/customer/page/CustomerCreatePage.tsx";
+import {CustomerUpdatePage} from "../modules/company/customer/page/CustomerUpdatePage.tsx";
+import {CustomerDetailPage} from "../modules/company/customer/page/CustomerDetailsPage.tsx";
+import {ProductListPage} from "../modules/company/product/page/ProductListPage.tsx";
+import {ProductCreatePage} from "../modules/company/product/page/ProductCreatePage.tsx";
+import {ProductDetailsPage} from "../modules/company/product/page/ProductDetailsPage.tsx";
+import {ProductUpdatePage} from "../modules/company/product/page/ProductUpdatePage.tsx";
 
 export function AppRoutes() {
 
@@ -61,6 +69,16 @@ export function AppRoutes() {
                 >
                     <Route index element={<Navigate to="dashboard" replace />} />
                     <Route path="dashboard" element={<CompanyDashboard />} />
+
+                    <Route path="customers" element={<CustomerListPage />} />
+                    <Route path="customers/create" element={<CustomerCreatePage />} />
+                    <Route path="customers/details/:id" element={<CustomerDetailPage />} />
+                    <Route path="customers/update/:id" element={<CustomerUpdatePage />} />
+
+                    <Route path="products" element={<ProductListPage />} />
+                    <Route path="products/create" element={<ProductCreatePage />} />
+                    <Route path="products/details/:id" element={<ProductDetailsPage />} />
+                    <Route path="products/update/:id" element={<ProductUpdatePage />} />
                 </Route>
 
 
