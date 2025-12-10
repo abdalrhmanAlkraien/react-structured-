@@ -1,7 +1,6 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {registerCompany} from "../service/companyService.ts";
-import styles from "../style/CreateCompanyComponent.module.css"
 import {DynamicCreateForm} from "../../../../common/component/create/DynamicCreateForm.tsx";
 import {createCompanyForm} from "../type/CreateCompanyForm.ts";
 
@@ -28,8 +27,8 @@ export function CreateCompanyComponent() {
     }
 
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>Create New Company</h1>
+        <div className="container-create-form">
+            <h1 className="title-create-form">Create New Company</h1>
 
             <DynamicCreateForm
                 sections={createCompanyForm}

@@ -1,4 +1,4 @@
-.container {
+.container-create-form {
     background: white;
     padding: 24px;
     border-radius: 12px;
@@ -7,7 +7,7 @@
     margin: 0 auto;
 }
 
-.title {
+.title-create-form {
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 20px;
