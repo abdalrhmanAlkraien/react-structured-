@@ -1,0 +1,82 @@
+.fileUploadWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Upload button */
+.uploadButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Info button (ℹ) */
+.infoButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #6b7280; /* gray-500 */
+    padding: 4px;
+}
+
+.infoButton:hover {
+    color: #111827; /* gray-900 */
+}
+
+/* Optional selected file text */
+.selectedFile {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Disabled state */
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.fileInfo {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+}
+
+.fileRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fileIcon {
+    font-size: 20px;
+}
+
+.fileMeta {
+    flex: 1;
+}
+
+.fileName {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.fileDetails {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.fileStatus {
+    font-size: 12px;
+    color: var(--success);
+}
+
+.fileIcon {
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+}

@@ -3,7 +3,7 @@
 :root {
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
-  --primary-light: #dbeafe;
+  --primary-light: #dbeafe;   /* ✔ exists */
 
   --secondary: #1e293b;
   --secondary-light: #334155;

@@ -1,0 +1,23 @@
+.spinnerWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    width: 100%;
+}
+
+/* Modern SaaS Spinner */
+.spinner {
+    width: 42px;
+    height: 42px;
+    border: 4px solid var(--primary-light); /* Light outer ring */
+    border-top-color: var(--primary);       /* Theme color */
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}

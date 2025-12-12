@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Upload section */
+.uploadSection {
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Steps section */
+.steps {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Action buttons */
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+}

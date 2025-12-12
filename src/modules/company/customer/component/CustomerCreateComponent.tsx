@@ -4,12 +4,14 @@ import {createCustomer} from "../service/CustomerService.ts";
 import {useAuth} from "../../../../context/auth/useAuth.ts";
 import {DynamicCreateForm} from "../../../../common/component/create/DynamicCreateForm.tsx";
 import {ProductForm} from "../type/ProductForm.ts";
+import {useNotification} from "../../../../context/notification/UseNotification.tsx";
 
 export function CustomerCreateComponent() {
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const {user} = useAuth();
+    const notify = useNotification();
 
     async function handleSubmit(formData: any) {
         try {
@@ -22,12 +24,13 @@ export function CustomerCreateComponent() {
             }
 
             await createCustomer(user?.companyId, formData);
-            alert("Customer created successfully!");
-
+            await notify.success("Create successfully");
             navigate("/company/customers");
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            alert("Failed to create customer");
+            await notify.error(
+                err?.response?.data?.message || "Create failed"
+            );
         } finally {
             setLoading(false);
         }

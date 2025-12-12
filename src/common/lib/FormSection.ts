@@ -5,5 +5,5 @@ export interface FormSection {
     name: string; // "company" or "user"
     fields: FormField[];
     sectionName: string;
-    objectKey: string;
+    objectKey?: string;
 }

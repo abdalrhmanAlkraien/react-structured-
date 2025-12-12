@@ -29,29 +29,58 @@ export function CompanyListComponent() {
     }, [activeFilters]);
 
     const filterFields: FilterField[] = [
-        { type: "text", name: "companyName", label: "Company Name" },
-        { type: "select", name: "plan", label: "Plan", options: ["FREE", "PRO", "ENTERPRISE"] },
-        { type: "boolean", name: "isActive", label: "Active?" },
         {
+            id: "company-name",
+            type: "text",
+            name: "companyName",
+            label: "Company Name",
+        },
+        {
+            id: "plan",
+            type: "select",
+            name: "plan",
+            label: "Plan",
+            options: ["FREE", "PRO", "ENTERPRISE"],
+        },
+        {
+            id: "is-active",
+            type: "boolean",
+            name: "isActive",
+            label: "Active?",
+        },
+        {
+            id: "country",
+            type: "api-select",
             name: "country",
             label: "Country",
-            type: "api-select",
-            api: "/lookup/countries", // GET
+            api: "/lookup/countries",
             valueKey: "id",
             labelKey: "name",
         },
         {
+            id: "city",
+            type: "api-select",
             name: "city",
             label: "City",
-            type: "api-select",
             api: "/lookup/countries/{countryId}/cities",
             dependsOn: "country",
             valueKey: "id",
             labelKey: "name",
         },
-        { type: "date", name: "subscribedDateFrom", label: "Subscribed From" },
-        { type: "date", name: "subscribedDateTo", label: "Subscribed To" }
+        {
+            id: "subscribed-from",
+            type: "date",
+            name: "subscribedDateFrom",
+            label: "Subscribed From",
+        },
+        {
+            id: "subscribed-to",
+            type: "date",
+            name: "subscribedDateTo",
+            label: "Subscribed To",
+        },
     ];
+
 
     const columns: Column<CompanyRow>[] = [
         { header: "Company Name", accessor: "companyName" },

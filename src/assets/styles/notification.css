@@ -1,0 +1,31 @@
+/* Full-screen transparent overlay */
+.notification-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* IMPORTANT: no background */
+    background: transparent;
+}
+
+/* Center content */
+.notification-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    /* IMPORTANT: no background, no shadow */
+    background: none;
+}
+
+/* Message styling */
+.notification-message {
+    font-size: 14px;
+    color: #2563eb; /* or your primary color */
+    font-weight: 500;
+}

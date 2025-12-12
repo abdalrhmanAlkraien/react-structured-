@@ -5,7 +5,6 @@ export const ProductForm: FormSection[] = [
         title: "Customer Information",       // Section visible title
         name: "customerInfo",                // Unique internal section key
         sectionName: "Customer Information",
-        objectKey: "customer",
 
         fields: [
             { type: "text", name: "externalId", label: "external id", required: true },

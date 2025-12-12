@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./style/DataTable.module.css";
+import {Spinner} from "../spinner/Spinner.tsx";
 
 export interface Column<T> {
     header: string;
@@ -22,7 +23,9 @@ export function DataTable<T>({
                                  emptyMessage = "No records found"
                              }: DataTableProps<T>) {
 
-    if (loading) return <div className={styles.loading}>Loading...</div>;
+    if (loading) {
+        return <Spinner />;
+    }
 
     return (
         <table className={styles.table}>

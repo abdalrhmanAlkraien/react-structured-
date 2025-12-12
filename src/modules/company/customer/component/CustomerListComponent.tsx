@@ -28,23 +28,29 @@ export function CustomerListComponent() {
     }, [activeFilters]);
 
     const filterFields: FilterField[] = [
-        { type: "text", name: "name", label: "Customer Name" },
-        { type: "text", name: "email", label: "Customer Email" },
-        { type: "text", name: "phone", label: "Customer phone" },
-        { type: "text", name: "gender", label: "Customer gender" },
+        { id: "name", type: "text", name: "name", label: "Customer Name" },
+        { id: "email", type: "text", name: "email", label: "Customer Email" },
+        { id: "phone", type: "text", name: "phone", label: "Customer phone" },
 
-        { type: "select", name: "gender", label: "Gender", options: ["FEMALE", "MALE"] },
-        { type: "boolean", name: "isActive", label: "Active?" },
+        { id: "gender-text", type: "text", name: "gender", label: "Customer gender" },
+        {
+            id: "gender-select",
+            type: "select",
+            name: "gender",
+            label: "Gender",
+            options: ["FEMALE", "MALE"],
+        },
 
-        { type: "date", name: "createDateFrom", label: "Create From" },
-        { type: "date", name: "createDateTo", label: "Create To" }
+        { id: "isActive", type: "boolean", name: "isActive", label: "Active?" },
+        { id: "createFrom", type: "date", name: "createDateFrom", label: "Create From" },
+        { id: "createTo", type: "date", name: "createDateTo", label: "Create To" },
     ];
 
     const columns: Column<CustomerRow>[] = [
-        { header: "Customer Name", accessor: "name" },
-        { header: "Customer Email", accessor: "email" },
-        { header: "Customer Phone", accessor: "phone" },
-        { header: "Customer Gender", accessor: "gender" },
+        {header: "Customer Name", accessor: "name"},
+        {header: "Customer Email", accessor: "email"},
+        {header: "Customer Phone", accessor: "phone"},
+        {header: "Customer Gender", accessor: "gender"},
         {
             header: "Actions",
             accessor: "id",
@@ -72,12 +78,12 @@ export function CustomerListComponent() {
             <DynamicFilter
                 key={reloadFlag}
                 fields={filterFields}
-                onChange={setActiveFilters} />
+                onChange={setActiveFilters}/>
 
             <TableContainer<CustomerRow>
                 columns={columns}
                 fetchData={fetchCustomers}
-                reloadFlag= {reloadFlag}
+                reloadFlag={reloadFlag}
             />
         </div>
     );

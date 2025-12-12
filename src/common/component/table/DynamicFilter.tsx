@@ -72,7 +72,7 @@ export function DynamicFilter({ fields, onChange }: Props) {
             case "text":
                 return (
                     <input
-                        key={field.name}
+                        key={field.id}
                         type="text"
                         placeholder={field.label}
                         value={values[field.name] || ""}
@@ -83,7 +83,7 @@ export function DynamicFilter({ fields, onChange }: Props) {
             case "select":
                 return (
                     <select
-                        key={field.name}
+                        key={field.id}
                         value={values[field.name] || ""}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                     >
@@ -97,7 +97,7 @@ export function DynamicFilter({ fields, onChange }: Props) {
             case "boolean":
                 return (
                     <select
-                        key={field.name}
+                        key={field.id}
                         value={values[field.name] || ""}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                     >
@@ -110,7 +110,7 @@ export function DynamicFilter({ fields, onChange }: Props) {
             case "date":
                 return (
                     <input
-                        key={field.name}
+                        key={field.id}
                         type="datetime-local"
                         value={values[field.name] || ""}
                         onChange={(e) => handleChange(field.name, e.target.value)}
@@ -124,7 +124,7 @@ export function DynamicFilter({ fields, onChange }: Props) {
 
                 return (
                     <select
-                        key={field.name}
+                        key={field.id}
                         value={values[field.name] || ""}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                         disabled={field.dependsOn && !values[field.dependsOn]}
