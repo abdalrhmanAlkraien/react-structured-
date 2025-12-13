@@ -102,8 +102,19 @@ export async function importCustomers(
             throw new Error(`Unsupported file type: ${payload.fileType}`);
     }
 
-    const response = await api.post(endpoint, payload);
+    console.log("file url", extractS3Key(payload.fileUrl));
+    const body = {
+        file: extractS3Key(payload.fileUrl),
+        fileType: payload.fileType,
+    };
+
+    const response = await api.post(endpoint, body);
     return response.data;
+}
+
+export function extractS3Key(s3Url: string): string {
+    const url = new URL(s3Url);
+    return url.pathname.replace(/^\/+/, ""); // remove leading /
 }
 
 function getFileExtensionFromUrl(fileUrl: string): string {
