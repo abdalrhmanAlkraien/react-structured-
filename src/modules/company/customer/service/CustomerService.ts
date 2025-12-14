@@ -36,8 +36,7 @@ export async function getCustomerById(
     companyId: string,
     id: string) {
     const res = await api.get(`/companies/${companyId}/customers/${id}`);
-    console.log(res.data);
-    return res.data;
+    return res.data.data;
 }
 
 export async function createCustomer(

@@ -23,5 +23,6 @@ export interface FormField {
     dependsOn?: string;
     valueKey?: string;   // e.g. "id"
     labelKey?: string;   // e.g. "name"
+    updateShowField: string;
 
 }

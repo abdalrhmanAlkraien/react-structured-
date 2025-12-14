@@ -1,6 +1,6 @@
 import type {FormSection} from "../../../../common/lib/FormSection.ts";
 
-export const ProductForm: FormSection[] = [
+export const CustomerForm: FormSection[] = [
     {
         title: "Customer Information",       // Section visible title
         name: "customerInfo",                // Unique internal section key

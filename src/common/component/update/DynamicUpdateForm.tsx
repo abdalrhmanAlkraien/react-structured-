@@ -1,374 +1,192 @@
 import React, {useEffect, useState} from "react";
 import styles from "../create/style/DynamicCreateForm.module.css"; // reuse same styles
 import type {FormSection} from "../../lib/FormSection";
-import {api} from "../../../config/axios.config";
 import type {FormField} from "../../lib/FormField.ts";
-import {getFieldValue, getSectionData} from "../../lib/DynamicForm.ts";
+import {getFieldValue, getSectionData, updateFieldValue} from "../../lib/DynamicForm.ts";
+import {useDynamicForm} from "../common/hook/useDynamicForm.ts";
+import {CommonField} from "../common/render/CommonField.tsx";
+import {SelectField} from "../common/render/SelectField.tsx";
+import {ApiSelectField} from "../common/render/ApiSelectField.tsx";
+import {MultiSelectDropdownField} from "../common/render/MultiSelectDropdownField.tsx";
+import {TextareaField} from "../common/render/TextareaField.tsx";
 
 
 interface Props {
-  sections: FormSection[];
-  initialValues: Record<string, any> | null; // e.g. { company: {...}, user: {...} }
-  onSubmit: (data: any) => void;
-  loading?: boolean;
-  submitLabel?: string;
+    sections: FormSection[];
+    initialValues: Record<string, any> | null;
+    onSubmit: (data: any) => void;
+    loading?: boolean;
 }
 
 export function DynamicUpdateForm({
-                                    sections,
-                                    initialValues,
-                                    onSubmit,
-                                    loading = false,
+                                      sections,
+                                      initialValues,
+                                      onSubmit,
+                                      loading = false,
                                   }: Props) {
-  const [formData, setFormData] = useState<Record<string, any>>({});
-  const [apiOptions, setApiOptions] = useState<Record<string, any[]>>({});
-  const [openDropdown, setOpenDropdown] = useState<Record<string, boolean>>({});
-
-  function updateValue(
-      section: FormSection,
-      fieldName: string,
-      value: any
-  ) {
-    setFormData((prev) => {
-      if (section.objectKey) {
-        return {
-          ...prev,
-          [section.objectKey]: {
-            ...(prev[section.objectKey] || {}),
-            [fieldName]: value,
-          },
-        };
-      }
-
-      return {
-        ...prev,
-        [fieldName]: value,
-      };
+    const {formData, setFormData, apiOptions} = useDynamicForm({
+        sections,
+        initialData: initialValues || {},
     });
-  }
+    const [openDropdown, setOpenDropdown] = useState<Record<string, boolean>>({});
 
-  // ------------------------------
-  // Load initial values (for UPDATE)
-  // ------------------------------
-  useEffect(() => {
-    if (initialValues) {
-      // Expecting same structure: { company: {...}, user: {...}, ... }
-      setFormData(initialValues);
-    }
-  }, [initialValues]);
 
-  // ------------------------------
-  // Load API data for api-select & multi-select fields
-  // ------------------------------
-  useEffect(() => {
-    sections.forEach((section) => {
-      section.fields.forEach(async (field) => {
-        if (
-            (field.type === "api-select" || field.type === "multi-select") &&
-            !field.dependsOn &&
-            field.api
-        ) {
-          const res = await api.get(field.api);
-          const list = Array.isArray(res.data?.data)
-              ? res.data.data
-              : Array.isArray(res.data)
-                  ? res.data
-                  : [];
-
-          setApiOptions((prev) => ({
-            ...prev,
-            [field.name]: list,
-          }));
-        } else if (field.type === "multi-select-dropdown" && field.api) {
-          const res = await api.get(field.api);
-          const list = Array.isArray(res.data?.data)
-              ? res.data.data
-              : Array.isArray(res.data)
-                  ? res.data
-                  : [];
-
-          setApiOptions((prev) => ({
-            ...prev,
-            [field.name]: list,
-          }));
+    // ------------------------------
+    // Sync initial values (UPDATE)
+    // ------------------------------
+    useEffect(() => {
+        if (initialValues) {
+            setFormData(initialValues);
         }
-      });
-    });
-  }, [sections]);
+    }, [initialValues, setFormData]);
 
-  // ------------------------------
-  // Dependent api-select: e.g. city depends on country
-  // ------------------------------
-  useEffect(() => {
-    sections.forEach((section) => {
-      section.fields.forEach(async (field) => {
-        if (field.type === "api-select" && field.dependsOn && field.api) {
 
-          const parentValue = getValue(section, field.dependsOn);
-
-          if (!parentValue) return;
-
-          const url = field.api.replace("{countryId}", parentValue);
-          const res = await api.get(url);
-
-          const list = Array.isArray(res.data?.data)
-              ? res.data.data
-              : Array.isArray(res.data)
-                  ? res.data
-                  : [];
-
-          setApiOptions((prev) => ({
-            ...prev,
-            [field.name]: list,
-          }));
+    // 🔥 ADD THIS useEffect HERE
+    useEffect(() => {
+        function handleClickOutside() {
+            setOpenDropdown({});
         }
-      });
-    });
-  }, [formData, sections]);
 
-  // ------------------------------
-  // Update field helper
-  // ------------------------------
-  function updateField(sectionKey: string, fieldName: string, value: any) {
-    setFormData((prev) => ({
-      ...prev,
-      [sectionKey]: {
-        ...(prev[sectionKey] || {}),
-        [fieldName]: value,
-      },
-    }));
-  }
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
 
-  // ------------------------------
-  // Render a single field
-  // ------------------------------
-  function renderField(section: FormSection, field: FormField) {
-    const sectionData = getSectionData(formData, section);
-    const value = getFieldValue(formData, section, field);
+    // ------------------------------
+    // Render Field
+    // ------------------------------
+    function renderField(section: FormSection, field: FormField) {
+        const value = getFieldValue(formData, section, field);
 
-    switch (field.type) {
-      case "text":
-      case "email":
-      case "password":
-      case "number":
-      case "date":
-        return (
-            <input
-                type={field.type}
-                className={styles.input}
-                required={field.required}
-                value={value}
-                onChange={(e) =>
-                    updateValue(section, field.name, e.target.value)
-                }
-            />
-        );
+        switch (field.type) {
+            case "text":
+            case "email":
+            case "password":
+            case "number":
+            case "date":
+                return (
+                    <CommonField
+                        type={field.type}
+                        value={value}
+                        required={field.required}
+                        onChange={(val) =>
+                            updateFieldValue(setFormData, section, field.name, val)
+                        }
+                    />
+                );
 
-      case "textarea":
-        return (
-            <textarea
-                className={styles.textarea}
-                required={field.required}
-                value={value}
-                onChange={(e) =>
-                    updateValue(section, field.name, e.target.value)
-                }
-            />
-        );
+            case "textarea":
+                return (
+                    <TextareaField
+                        value={value}
+                        required={field.required}
+                        onChange={(val) =>
+                            updateFieldValue(setFormData, section, field.name, val)
+                        }
+                    />
+                );
 
-      case "select":
-        return (
-            <select
-                className={styles.select}
-                required={field.required}
-                value={value}
-                onChange={(e) =>
-                    updateValue(section, field.name, e.target.value)
-                }
-            >
-              <option value="">Select</option>
-              {field.options?.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-              ))}
-            </select>
-        );
+            case "select":
+                return (
+                    <SelectField
+                        value={value}
+                        required={field.required}
+                        options={field.options || []}
+                        onChange={(val) =>
+                            updateFieldValue(setFormData, section, field.name, val)
+                        }
+                    />);
 
-      case "api-select":
-        return (
-            <select
-                className={styles.select}
-                required={field.required}
-                value={value}
-                disabled={field.dependsOn && !sectionData[field.dependsOn]}
-                onChange={(e) =>
-                    updateValue(section, field.name, e.target.value)
-                }
-            >
-              <option value="">Select</option>
-              {(apiOptions[field.name] || []).map((opt) => (
-                  <option
-                      key={opt[field.valueKey!]}
-                      value={opt[field.valueKey!]}
-                  >
-                    {opt[field.labelKey!]}
-                  </option>
-              ))}
-            </select>
-        );
+            case "api-select": {
+                const options = apiOptions[field.name] || [];
+                const value = getFieldValue(formData, section, field);
 
-      case "multi-select-dropdown": {
-        const selectedValues = Array.isArray(value) ? value : [];
-        const list = apiOptions[field.name] || [];
+                const hasOption = options.some(
+                    (opt) => opt[field.valueKey!] === value
+                );
 
-        return (
-            <div className={styles.dropdownContainer}>
-              <div
-                  className={styles.dropdownHeader}
-                  onClick={() =>
-                      setOpenDropdown((prev) => ({
-                        ...prev,
-                        [field.name]: !prev[field.name],
-                      }))
-                  }
-              >
-                {selectedValues.length === 0
-                    ? field.label
-                    : `${selectedValues.length} selected`}
-              </div>
+                const showLabel =
+                    field.updateShowField && formData[field.updateShowField];
 
-              {openDropdown[field.name] && (
-                  <div className={styles.dropdownMenu}>
-                    {list.map((opt) => {
-                      const optionValue =
-                          opt[field.valueKey!] || opt.id;
-                      const optionLabel =
-                          opt[field.labelKey!] || opt.role;
-                      const isChecked =
-                          selectedValues.includes(optionValue);
-
-                      return (
-                          <div
-                              key={optionValue}
-                              className={styles.dropdownItem}
-                              onClick={() => {
-                                const updated = isChecked
-                                    ? selectedValues.filter(
-                                        (v) => v !== optionValue
-                                    )
-                                    : [...selectedValues, optionValue];
-
-                                updateValue(
-                                    section,
-                                    field.name,
-                                    updated
-                                );
-                              }}
-                          >
-                            <input
-                                type="checkbox"
-                                checked={isChecked}
-                                readOnly
-                                className={styles.dropdownCheckbox}
-                            />
-                            <span>{optionLabel}</span>
-                          </div>
-                      );
-                    })}
-                  </div>
-              )}
-            </div>
-        );
-      }
-
-      case "multi-select": {
-        const selectedValues = Array.isArray(value) ? value : [];
-        const list = apiOptions[field.name] || [];
-
-        return (
-            <div className={styles.multiCheckWrapper}>
-              {list.map((opt) => {
-                const optionValue =
-                    opt[field.valueKey!] || opt.id;
-                const optionLabel =
-                    opt[field.labelKey!] || opt.role;
+                const dependencyMissing =
+                    field.dependsOn &&
+                    field.dependsOn !== "__company__" &&
+                    !getSectionData(formData, section)[field.dependsOn];
 
                 return (
-                    <label
-                        key={optionValue}
-                        className={styles.multiCheckItem}
-                    >
-                      <input
-                          type="checkbox"
-                          checked={selectedValues.includes(optionValue)}
-                          onChange={(e) => {
-                            const updated = e.target.checked
-                                ? [...selectedValues, optionValue]
-                                : selectedValues.filter(
-                                    (v) => v !== optionValue
-                                );
-
-                            updateValue(
-                                section,
-                                field.name,
-                                updated
-                            );
-                          }}
-                      />
-                      <span>{optionLabel}</span>
-                    </label>
+                    <ApiSelectField
+                        value={value}
+                        required={field.required}
+                        options={options}
+                        valueKey={field.valueKey!}
+                        labelKey={field.labelKey!}
+                        fallbackLabel={showLabel}
+                        disabled={dependencyMissing}
+                        onChange={(val) =>
+                            updateFieldValue(setFormData, section, field.name, val)
+                        }
+                    />
                 );
-              })}
-            </div>
-        );
-      }
+            }
 
-      default:
-        return null;
+            case "multi-select-dropdown":
+                return (
+                    <MultiSelectDropdownField
+                        value={Array.isArray(value) ? value : []}
+                        options={apiOptions[field.name] || []}
+                        valueKey={field.valueKey!}
+                        labelKey={field.labelKey!}
+                        isOpen={openDropdown[field.name] || false}
+                        onToggle={() =>
+                            setOpenDropdown((p) => ({
+                                ...p,
+                                [field.name]: !p[field.name],
+                            }))
+                        }
+                        onChange={(vals) =>
+                            updateFieldValue(setFormData, section, field.name, vals)
+                        }
+                    />
+                );
+
+            default:
+                return null;
+        }
     }
-  }
 
-  // ------------------------------
-  // Submit
-  // ------------------------------
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    onSubmit(formData); // same structure as initialValues
-  }
+    // ------------------------------
+    // Submit
+    // ------------------------------
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        onSubmit(formData);
+    }
 
-  return (
-      <form className={styles.formWrapper} onSubmit={handleSubmit}>
-        {sections.map((section) => (
-            <div key={section.name} className={styles.card}>
-              <h2 className={styles.sectionTitle}>{section.title}</h2>
+    return (
+        <form className={styles.formWrapper} onSubmit={handleSubmit}>
+            {sections.map((section) => (
+                <div key={section.name} className={styles.card}>
+                    <h2 className={styles.sectionTitle}>{section.title}</h2>
 
-              <div className={styles.grid}>
-                {section.fields.map((field) => (
-                    <div className={styles.formGroup} key={field.name}>
-                      <label className={styles.label}>
-                        {field.label}
-                        {field.required && (
-                            <span className={styles.required}> *</span>
-                        )}
-                      </label>
-
-                      {renderField(section, field)}
+                    <div className={styles.grid}>
+                        {section.fields.map((field) => (
+                            <div key={field.name} className={styles.formGroup}>
+                                <label className={styles.label}>{field.label}</label>
+                                {renderField(section, field)}
+                            </div>
+                        ))}
                     </div>
-                ))}
-              </div>
-            </div>
-        ))}
+                </div>
+            ))}
 
-        <div className={styles.submitArea}>
-          <button
-              className="btn btn-primary btn-md"
-              type="submit"
-              disabled={loading}
-          >
-            {loading ? "Submitting..." : "Update Customer"}
-          </button>
-        </div>
-      </form>
-  );
+            <div className={styles.submitArea}>
+                <button
+                    className="btn btn-primary btn-md"
+                    type="submit"
+                    disabled={loading}
+                >
+                    {loading ? "Submitting..." : "Update"}
+                </button>
+            </div>
+        </form>
+    );
 }

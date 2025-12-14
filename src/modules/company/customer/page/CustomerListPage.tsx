@@ -21,7 +21,7 @@ export function CustomerListPage() {
                 <div style={{ display: "flex", gap: 8 }}>
                     <AddButton
                         label="Add Customer"
-                        to="/company/customers"
+                        to="/company/customers/create"
                     />
 
                     <div style={{ display: "flex", gap: 8 }}>
