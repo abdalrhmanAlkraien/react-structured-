@@ -45,7 +45,7 @@ export function CategoryDetailsComponent() {
 
     if (loading) return <p>Loading...</p>;
 
-    if (error) return <NoData message="Customer details not available" />;
+    if (error) return <NoData message="Category details not available" />;
 
     const fields = [
         { label: "Category Name", accessor: "name" },
