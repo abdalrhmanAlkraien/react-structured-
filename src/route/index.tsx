@@ -22,6 +22,10 @@ import {CategoryListPage} from "../modules/company/category/page/CategoryListPag
 import {CategoryDetailsPage} from "../modules/company/category/page/CategoryDetailsPage.tsx";
 import {CategoryCreatePage} from "../modules/company/category/page/CategoryCreatePage.tsx";
 import {CategoryUpdatePage} from "../modules/company/category/page/CategoryUpdatePage.tsx";
+import {OrderListPage} from "../modules/company/order/page/OrderListPage.tsx";
+import {OrderCreatePage} from "../modules/company/order/page/OrderCreatePage.tsx";
+import {OrderDetailsPage} from "../modules/company/order/page/OrderDetailsPage.tsx";
+import {OrderUpdatePage} from "../modules/company/order/page/OrderUpdatePage.tsx";
 
 export function AppRoutes() {
 
@@ -89,6 +93,11 @@ export function AppRoutes() {
                     <Route path="products/create" element={<ProductCreatePage/>}/>
                     <Route path="products/details/:id" element={<ProductDetailsPage/>}/>
                     <Route path="products/update/:id" element={<ProductUpdatePage/>}/>
+
+                    <Route path="orders" element={<OrderListPage/>}/>
+                    <Route path="orders/create" element={<OrderCreatePage/>}/>
+                    <Route path="orders/details/:id" element={<OrderDetailsPage/>}/>
+                    <Route path="orders/update/:id" element={<OrderUpdatePage/>}/>
                 </Route>
 
 

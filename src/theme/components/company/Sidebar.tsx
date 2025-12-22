@@ -45,6 +45,15 @@ export function CompanySidebar() {
                 </NavLink>
 
                 <NavLink
+                    to="orders"
+                    className={({isActive}) =>
+                        isActive ? styles.activeLink : styles.link
+                    }
+                >
+                    Orders
+                </NavLink>
+
+                <NavLink
                     to="/settings"
                     className={({isActive}) =>
                         isActive ? styles.activeLink : styles.link
