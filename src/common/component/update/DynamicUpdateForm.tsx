@@ -9,6 +9,7 @@ import {SelectField} from "../common/render/SelectField.tsx";
 import {ApiSelectField} from "../common/render/ApiSelectField.tsx";
 import {MultiSelectDropdownField} from "../common/render/MultiSelectDropdownField.tsx";
 import {TextareaField} from "../common/render/TextareaField.tsx";
+import {PageableApiSelectionField} from "../common/render/PageableApiSelectinoField.tsx";
 
 
 interface Props {
@@ -24,7 +25,7 @@ export function DynamicUpdateForm({
                                       onSubmit,
                                       loading = false,
                                   }: Props) {
-    const {formData, setFormData, apiOptions} = useDynamicForm({
+    const {formData, setFormData, apiOptions, fetchOptions, ensureSelectedOptionLoaded} = useDynamicForm({
         sections,
         initialData: initialValues || {},
     });
@@ -50,6 +51,29 @@ export function DynamicUpdateForm({
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
+
+
+    useEffect(() => {
+        sections.forEach(section => {
+            section.fields.forEach(field => {
+                if (field.type !== "page-api-select") return;
+
+                const value = getSectionData(formData, section)[field.name];
+                if (!value) return;
+
+                let url = field.apiById!;
+                const companyId = formData.__meta__?.companyId;
+
+                if (companyId) {
+                    url = url.replace("{companyId}", companyId);
+                }
+
+                url = url.replace("{id}", value);
+
+                ensureSelectedOptionLoaded(field, url, value);
+            });
+        });
+    }, [sections, formData, ensureSelectedOptionLoaded]);
 
     // ------------------------------
     // Render Field
@@ -97,7 +121,8 @@ export function DynamicUpdateForm({
                     />);
 
             case "api-select": {
-                const options = apiOptions[field.name] || [];
+                const state = apiOptions[field.name];
+                const options = state?.items ?? [];
                 const value = getFieldValue(formData, section, field);
 
                 const hasOption = options.some(
@@ -116,7 +141,7 @@ export function DynamicUpdateForm({
                     <ApiSelectField
                         value={value}
                         required={field.required}
-                        options={options}
+                        options={options}          // ✅ always array
                         valueKey={field.valueKey!}
                         labelKey={field.labelKey!}
                         fallbackLabel={showLabel}
@@ -124,6 +149,54 @@ export function DynamicUpdateForm({
                         onChange={(val) =>
                             updateFieldValue(setFormData, section, field.name, val)
                         }
+                    />
+                );
+            }
+
+            case "page-api-select": {
+                const state = apiOptions[field.name];
+                const value = getFieldValue(formData, section, field);
+
+                return (
+                    <PageableApiSelectionField
+                        value={value}
+                        optionsState={state}
+                        valueKey={field.valueKey!}
+                        labelKey={field.labelKey!}
+                        fallbackLabel={
+                            field.updateShowField
+                                ? formData[field.updateShowField]
+                                : undefined
+                        }
+                        onChange={(val) =>
+                            updateFieldValue(setFormData, section, field.name, val)
+                        }
+                        onSearch={(search) =>
+                            fetchOptions({
+                                field,
+                                url: field.api!.replace(
+                                    "{companyId}",
+                                    formData.__meta__.companyId
+                                ),
+                                page: 0,
+                                search,
+                                append: false,
+                            })
+                        }
+                        onLoadMore={() => {
+                            if (!state || !state.hasMore || state.loading) return;
+
+                            fetchOptions({
+                                field,
+                                url: field.api!.replace(
+                                    "{companyId}",
+                                    formData.__meta__.companyId
+                                ),
+                                page: state.page + 1,
+                                search: state.search,
+                                append: true,
+                            });
+                        }}
                     />
                 );
             }

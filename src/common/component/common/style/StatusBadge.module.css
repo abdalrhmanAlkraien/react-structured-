@@ -1,0 +1,40 @@
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+/* Common Order Statuses */
+
+.PAID {
+    background-color: #e6f7f0;
+    color: #0f766e;
+}
+
+.PENDING {
+    background-color: #fff7ed;
+    color: #c2410c;
+}
+
+.FAILED {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.CANCELLED {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.REFUNDED {
+    background-color: #eef2ff;
+    color: #3730a3;
+}
+
+.DEFAULT {
+    background-color: #e5e7eb;
+    color: #374151;
+}

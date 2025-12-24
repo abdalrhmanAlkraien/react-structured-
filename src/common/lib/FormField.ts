@@ -9,6 +9,7 @@ export interface FormField {
         | "number"
         | "select"
         | "api-select"
+        | "page-api-select"
         | "multi-select"
         | "multi-select-dropdown"
         | "date";
@@ -25,4 +26,11 @@ export interface FormField {
     labelKey?: string;   // e.g. "name"
     updateShowField: string;
 
+    // 🔥 NEW for pageable (optional)
+    pageable?: boolean;
+    searchParam?: string; // e.g. "externalId" or "name"
+    pageSize?: number;
+
+    // (for update forms with pageable)
+    apiById?: string;
 }

@@ -31,6 +31,7 @@ export function TableContainer<T>({
 
         const response = await fetchData(page, pageSize);
 
+        console.log("order res", response);
         setRows(response.content);
         setTotalPages(response.totalPages);
         setLoading(false);

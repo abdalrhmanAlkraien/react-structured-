@@ -9,6 +9,7 @@ import {SelectField} from "../common/render/SelectField.tsx";
 import {TextareaField} from "../common/render/TextareaField.tsx";
 import {ApiSelectField} from "../common/render/ApiSelectField.tsx";
 import {MultiSelectDropdownField} from "../common/render/MultiSelectDropdownField.tsx";
+import {PageableApiSelectionField} from "../common/render/PageableApiSelectinoField.tsx";
 
 /* ======================================================
  * Types
@@ -35,10 +36,8 @@ export function DynamicCreateForm({
         formData,
         setFormData,
         apiOptions,
-    } = useDynamicForm({
-        sections,
-        initialData,
-    });
+        fetchOptions,   // ✅ NOW AVAILABLE
+    } = useDynamicForm({ sections, initialData });
 
     const [openDropdown, setOpenDropdown] = useState<Record<string, boolean>>({});
 
@@ -99,12 +98,14 @@ export function DynamicCreateForm({
                     />
                 );
 
-            case "api-select":
+            case "api-select": {
+                const state = apiOptions[field.name];
+
                 return (
                     <ApiSelectField
                         value={value}
                         required={field.required}
-                        options={apiOptions[field.name] || []}
+                        options={state?.items ?? []}   // ✅ FIX
                         valueKey={field.valueKey!}
                         labelKey={field.labelKey!}
                         fallbackLabel={
@@ -117,6 +118,48 @@ export function DynamicCreateForm({
                         }
                     />
                 );
+            }
+
+            case "page-api-select": {
+                const state = apiOptions[field.name];
+
+                return (
+                    <PageableApiSelectionField
+                        value={value}
+                        optionsState={state}
+                        valueKey={field.valueKey!}
+                        labelKey={field.labelKey!}
+                        fallbackLabel={field.updateShowField
+                            ? formData[field.updateShowField]
+                            : undefined}
+                        onChange={(val) => updateFieldValue(setFormData, section, field.name, val)}
+                        onSearch={(search) => fetchOptions({
+                            field,
+                            url: field.api!.replace(
+                                "{companyId}",
+                                formData.__meta__.companyId
+                            ),
+                            page: 0,
+                            search,
+                            append: false,
+                        })}
+                        onLoadMore={() => {
+                            if (!state || !state.hasMore || state.loading) return;
+
+                            fetchOptions({
+                                field,
+                                url: field.api!.replace(
+                                    "{companyId}",
+                                    formData.__meta__.companyId
+                                ),
+                                page: state.page + 1,
+                                search: state.search,
+                                append: true,
+                            });
+                        }} placeholder={""}
+                    />
+                );
+            }
 
             case "multi-select-dropdown":
                 return (
