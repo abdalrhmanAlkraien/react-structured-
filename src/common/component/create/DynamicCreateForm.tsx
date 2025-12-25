@@ -3,13 +3,15 @@ import type {FormField} from "../../lib/FormField.ts";
 import type {FormSection} from "../../lib/FormSection.ts";
 import {getFieldValue, updateFieldValue} from "../../lib/DynamicForm.ts";
 import {useDynamicForm} from "../common/hook/useDynamicForm.ts";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {CommonField} from "../common/render/CommonField.tsx";
 import {SelectField} from "../common/render/SelectField.tsx";
 import {TextareaField} from "../common/render/TextareaField.tsx";
 import {ApiSelectField} from "../common/render/ApiSelectField.tsx";
 import {MultiSelectDropdownField} from "../common/render/MultiSelectDropdownField.tsx";
 import {PageableApiSelectionField} from "../common/render/PageableApiSelectinoField.tsx";
+import {RepeatableSection} from "../common/render/RepeatableSection.tsx";
+import {toInstant} from "../../lib/dateUtils.ts";
 
 /* ======================================================
  * Types
@@ -51,6 +53,7 @@ export function DynamicCreateForm({
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
+
     /* ======================================================
      * Field Renderers
      * ====================================================== */
@@ -64,6 +67,7 @@ export function DynamicCreateForm({
             case "password":
             case "number":
             case "date":
+            case "datetime-local":
                 return (
                     <CommonField
                         type={field.type}
@@ -194,7 +198,11 @@ export function DynamicCreateForm({
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        onSubmit(formData);
+        const payload = {
+            ...formData,
+            orderDate: toInstant(formData.orderDate),
+        };
+        onSubmit(payload);
     }
 
     /* ======================================================
@@ -203,34 +211,42 @@ export function DynamicCreateForm({
 
     return (
         <form className={styles.formWrapper} onSubmit={handleSubmit}>
-            {sections.map((section) => (
-                <div key={section.name} className={styles.card}>
-                    <h2 className={styles.sectionTitle}>
-                        {section.title}
-                    </h2>
+            {sections.map((section) =>
+                section.repeatable ? (
+                    <RepeatableSection
+                        key={section.name}
+                        section={section}
+                        formData={formData}
+                        setFormData={setFormData}
+                        apiOptions={apiOptions}
+                        fetchOptions={fetchOptions}
+                    />
+                ) : (
+                    <div key={section.name} className={styles.card}>
+                        <h2 className={styles.sectionTitle}>
+                            {section.title}
+                        </h2>
 
-                    <div className={styles.grid}>
-                        {section.fields.map((field) => (
-                            <div
-                                key={field.name}
-                                className={styles.formGroup}
-                            >
-                                <label className={styles.label}>
-                                    {field.label}
-                                    {field.required && (
-                                        <span className={styles.required}>
-                                            {" "}
-                                            *
-                                        </span>
-                                    )}
-                                </label>
+                        <div className={styles.grid}>
+                            {section.fields.map((field) => (
+                                <div
+                                    key={field.name}
+                                    className={styles.formGroup}
+                                >
+                                    <label className={styles.label}>
+                                        {field.label}
+                                        {field.required && (
+                                            <span className={styles.required}> *</span>
+                                        )}
+                                    </label>
 
-                                {renderField(section, field)}
-                            </div>
-                        ))}
+                                    {renderField(section, field)}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                )
+            )}
 
             <div className={styles.submitArea}>
                 <button

@@ -10,6 +10,8 @@ import {ApiSelectField} from "../common/render/ApiSelectField.tsx";
 import {MultiSelectDropdownField} from "../common/render/MultiSelectDropdownField.tsx";
 import {TextareaField} from "../common/render/TextareaField.tsx";
 import {PageableApiSelectionField} from "../common/render/PageableApiSelectinoField.tsx";
+import {RepeatableSection} from "../common/render/RepeatableSection.tsx";
+import {toInstant} from "../../lib/dateUtils.ts";
 
 
 interface Props {
@@ -30,6 +32,7 @@ export function DynamicUpdateForm({
         initialData: initialValues || {},
     });
     const [openDropdown, setOpenDropdown] = useState<Record<string, boolean>>({});
+    const loadedRef = React.useRef<Set<string>>(new Set());
 
 
     // ------------------------------
@@ -55,25 +58,55 @@ export function DynamicUpdateForm({
 
     useEffect(() => {
         sections.forEach(section => {
-            section.fields.forEach(field => {
-                if (field.type !== "page-api-select") return;
+            if (!section.repeatable) {
+                section.fields.forEach(field => {
+                    if (field.type !== "page-api-select") return;
 
-                const value = getSectionData(formData, section)[field.name];
-                if (!value) return;
+                    const sectionData = getSectionData(formData, section);
+                    const value = sectionData?.[field.idKey];
 
-                let url = field.apiById!;
-                const companyId = formData.__meta__?.companyId;
+                    if (!value) return;
 
-                if (companyId) {
-                    url = url.replace("{companyId}", companyId);
-                }
+                    const key = `${field.name}:${value}`;
+                    if (loadedRef.current.has(key)) return; // 🔥 STOP LOOP
 
-                url = url.replace("{id}", value);
+                    let url = field.apiById!;
+                    const companyId = formData.__meta__?.companyId;
+                    if (companyId) {
+                        url = url.replace("{companyId}", companyId);
+                    }
+                    url = url.replace("{id}", value);
 
-                ensureSelectedOptionLoaded(field, url, value);
-            });
+                    loadedRef.current.add(key); // ✅ mark as loaded
+                    ensureSelectedOptionLoaded(field, url, value);
+                });
+            } else {
+                const items = formData[section.name] || [];
+
+                items.forEach((item: any, index: number) => {
+                    section.fields.forEach(field => {
+                        if (field.type !== "page-api-select") return;
+
+                        const value = item[field.idKey];
+                        if (!value) return;
+
+                        const key = `${section.name}:${index}:${field.name}:${value}`;
+                        if (loadedRef.current.has(key)) return; // 🔥 STOP LOOP
+
+                        let url = field.apiById!;
+                        const companyId = formData.__meta__?.companyId;
+                        if (companyId) {
+                            url = url.replace("{companyId}", companyId);
+                        }
+                        url = url.replace("{id}", value);
+
+                        loadedRef.current.add(key); // ✅ mark as loaded
+                        ensureSelectedOptionLoaded(field, url, value);
+                    });
+                });
+            }
         });
-    }, [sections, formData, ensureSelectedOptionLoaded]);
+    }, [sections, formData.__meta__?.companyId, ensureSelectedOptionLoaded]);
 
     // ------------------------------
     // Render Field
@@ -87,6 +120,7 @@ export function DynamicUpdateForm({
             case "password":
             case "number":
             case "date":
+            case "datetime-local":
                 return (
                     <CommonField
                         type={field.type}
@@ -155,11 +189,14 @@ export function DynamicUpdateForm({
 
             case "page-api-select": {
                 const state = apiOptions[field.name];
-                const value = getFieldValue(formData, section, field);
-
+                // const value = getFieldValue(formData, section, field);
+                // const value =
+                //     field.valueKey
+                //         ? formData[field.valueKey]
+                //         : getFieldValue(formData, section, field);
                 return (
                     <PageableApiSelectionField
-                        value={value}
+                        value={formData[field.valueKey!]}
                         optionsState={state}
                         valueKey={field.valueKey!}
                         labelKey={field.labelKey!}
@@ -231,25 +268,49 @@ export function DynamicUpdateForm({
     // ------------------------------
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        onSubmit(formData);
+        const payload = {
+            ...formData,
+            orderDate: toInstant(formData.orderDate),
+        };
+        onSubmit(payload);
     }
 
     return (
         <form className={styles.formWrapper} onSubmit={handleSubmit}>
-            {sections.map((section) => (
-                <div key={section.name} className={styles.card}>
-                    <h2 className={styles.sectionTitle}>{section.title}</h2>
+            {sections.map((section) =>
+                section.repeatable ? (
+                    <RepeatableSection
+                        key={section.name}
+                        section={section}
+                        formData={formData}
+                        setFormData={setFormData}
+                        apiOptions={apiOptions}
+                        fetchOptions={fetchOptions}
+                    />
+                ) : (
+                    <div key={section.name} className={styles.card}>
+                        <h2 className={styles.sectionTitle}>
+                            {section.title}
+                        </h2>
 
-                    <div className={styles.grid}>
-                        {section.fields.map((field) => (
-                            <div key={field.name} className={styles.formGroup}>
-                                <label className={styles.label}>{field.label}</label>
-                                {renderField(section, field)}
-                            </div>
-                        ))}
+                        <div className={styles.grid}>
+                            {section.fields.map((field) => (
+                                <div
+                                    key={field.name}
+                                    className={styles.formGroup}
+                                >
+                                    <label className={styles.label}>
+                                        {field.label}
+                                        {field.required && <span>*</span>}
+                                    </label>
+
+                                    {renderField(section, field)}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                )
+            )}
 
             <div className={styles.submitArea}>
                 <button

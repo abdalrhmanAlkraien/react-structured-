@@ -1,7 +1,7 @@
 import styles from "./style/render.module.css"
 
 interface Props {
-    type: "text" | "email" | "password" | "number" | "date";
+    type: "text" | "email" | "password" | "number" | "date" | "datetime-local";
     value: any;
     required?: boolean;
     onChange: (value: string) => void;

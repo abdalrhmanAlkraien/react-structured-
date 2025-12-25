@@ -6,4 +6,9 @@ export interface FormSection {
     fields: FormField[];
     sectionName: string;
     objectKey?: string;
+
+    // for child sections
+    repeatable?: boolean;     // 🔥 allows add/remove
+    minItems?: number;
+    maxItems?: number;
 }

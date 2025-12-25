@@ -12,7 +12,8 @@ export interface FormField {
         | "page-api-select"
         | "multi-select"
         | "multi-select-dropdown"
-        | "date";
+        | "date"
+        | "datetime-local";
 
     required?: boolean;
 
@@ -33,4 +34,10 @@ export interface FormField {
 
     // (for update forms with pageable)
     apiById?: string;
+    idKey?: string; // eg: customerId
+
+    // ✅ NEW (apiById specific)
+    apiByIdIdKey?: string;
+    apiByIdValueKey?: string;
+    apiByIdLabelKey?: string;
 }

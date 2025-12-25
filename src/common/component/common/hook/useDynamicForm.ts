@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import type {FormField} from "../../../lib/FormField.ts";
 import type {FormSection} from "../../../lib/FormSection.ts";
 import {getSectionData} from "../../../lib/DynamicForm.ts";
@@ -21,6 +21,14 @@ export function useDynamicForm({
                                }: UseDynamicFormProps) {
     const [formData, setFormData] = useState<Record<string, any>>(initialData);
     const [apiOptions, setApiOptions] = useState<Record<string, ApiSelectState>>({});
+
+    // ✅ ADD THIS
+    const apiOptionsRef = useRef<Record<string, any>>({});
+
+    // 🔥 keep ref in sync
+    useEffect(() => {
+        apiOptionsRef.current = apiOptions;
+    }, [apiOptions]);
 
     /* -----------------------------
      * Normalize API response
@@ -152,6 +160,12 @@ export function useDynamicForm({
                     field.dependsOn === "__company__" &&
                     field.api
                 ) {
+                    const existing = apiOptionsRef.current[field.name];
+
+                    console.log(apiOptionsRef.current[field.name]);
+                    // 🔥 DO NOT RELOAD IF ALREADY LOADED
+                    if (existing?.loaded) return;
+
                     const url = field.api.replace("{companyId}", companyId);
 
                     fetchOptions({
@@ -199,35 +213,58 @@ export function useDynamicForm({
         });
     }, [sections, formData, fetchOptions]);
 
+
+
     const ensureSelectedOptionLoaded = useCallback(
         async (field: FormField, url: string, value: any) => {
-            if (!value || !field.apiById) return;
+            const state = apiOptionsRef.current[field.name] ?? {
+                items: [],
+            };
 
-            const state = apiOptions[field.name];
-            const exists = state?.items?.some(
-                (i) => i[field.valueKey!] === value
-            );
+            // 🔒 Already exists → stop
+            if (state.items.some(o => o[field.valueKey!] === value)) {
+                return;
+            }
 
-            if (exists) return;
+            const res = await api.get(url);
 
-            try {
-                const res = await api.get(url);
-                const item = res.data.data;
+            const payload = res.data?.data ?? {};
 
-                if (!item) return;
+            const normalized = {
+                [field.idKey!]:
+                    payload[field.apiByIdIdKey ?? field.idKey!],
 
-                setApiOptions(prev => ({
+                [field.valueKey!]:
+                    payload[field.apiByIdValueKey ?? field.valueKey!],
+
+                [field.labelKey!]:
+                    payload[field.apiByIdLabelKey ?? field.labelKey!],
+            };
+
+            if (
+                normalized[field.valueKey!] === undefined ||
+                normalized[field.labelKey!] === undefined
+            ) {
+                console.warn(
+                    `[page-api-select] apiById response missing expected keys`,
+                    { field, response: res }
+                );
+            }
+
+            setApiOptions(prev => {
+                const existing = prev[field.name]?.items || [];
+
+                // 🔥 MERGE selected option WITH page
+                return {
                     ...prev,
                     [field.name]: {
                         ...prev[field.name],
-                        items: [item, ...(prev[field.name]?.items ?? [])],
+                        items: [normalized, ...existing], // 👈 IMPORTANT
                     },
-                }));
-            } catch (e) {
-                console.warn("Failed to load selected option", e);
-            }
+                };
+            });
         },
-        [apiOptions]
+        []
     );
 
     return {

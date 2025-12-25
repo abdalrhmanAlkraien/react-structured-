@@ -6,6 +6,7 @@ import {Spinner} from "../../../../common/component/spinner/Spinner.tsx";
 import {getOrderById, getOrders, updateOrders} from "../service/OrderService.ts";
 import {DynamicUpdateForm} from "../../../../common/component/update/DynamicUpdateForm.tsx";
 import {OrderForm} from "../service/OrderForm.ts";
+import {toDateTimeLocal} from "../../../../common/lib/dateUtils.ts";
 
 export function OrderUpdateComponent() {
 
@@ -33,16 +34,23 @@ export function OrderUpdateComponent() {
                     __meta__: { companyId: user.companyId },
 
                     externalId: res.externalId,
-                    orderDate: res.orderDate
-                        ? res.orderDate.substring(0, 10)   // "YYYY-MM-DD"
-                        : "",                    description: res.description ?? "",
+                    orderDate: toDateTimeLocal(res.orderDate),
                     totalAmount: res.totalAmount,
                     status: res.status,
                     transactionId: res.transactionId,
 
                     // api-select values
+                    customerId: res.customer?.id,              // ✅ ADD
                     customerExternalId: res.customer?.externalId,
                     customerName: res.customer?.name,
+
+                    items: res.items.map(item => ({
+                        productId: item.product.id,
+                        productExternalId: item.product.externalId,  // ✅ VALUE
+                        productName: item.product.name,              // ✅ LABEL
+                        quantity: item.quantity,
+                        price: item.price
+                    }))
                 });
             } finally {
                 setLoading(false);
