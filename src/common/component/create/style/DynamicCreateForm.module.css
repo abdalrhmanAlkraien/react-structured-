@@ -62,3 +62,25 @@
     justify-content: flex-end;
     margin-top: 10px;
 }
+
+/* ===============================
+   REPEATABLE SECTION STYLES
+=============================== */
+
+.repeatableItem {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.itemActions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+.addBtnWrapper {
+    margin-top: 24px;
+}

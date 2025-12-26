@@ -198,11 +198,42 @@ export function DynamicCreateForm({
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        const payload = {
-            ...formData,
-            orderDate: toInstant(formData.orderDate),
-        };
+
+        // 1️⃣ Build backend-safe payload
+        const payload = buildSubmitPayload(formData, sections);
+
+        // 2️⃣ Apply transformations (date → Instant)
+        if (payload.orderDate) {
+            payload.orderDate = toInstant(payload.orderDate);
+        }
+
+        // 3️⃣ Submit
         onSubmit(payload);
+    }
+
+    function buildSubmitPayload(
+        formData: Record<string, any>,
+        sections: FormSection[]
+    ) {
+        const payload: Record<string, any> = { ...formData };
+
+        sections.forEach(section => {
+            section.fields.forEach(field => {
+                if (!field.submitKey) return;
+
+                // value stored under field.name (UI)
+                const value = formData[field.name];
+
+                if (value !== undefined) {
+                    payload[field.submitKey] = value;
+                }
+
+                // 🔥 Remove UI-only field
+                delete payload[field.name];
+            });
+        });
+
+        return payload;
     }
 
     /* ======================================================

@@ -40,4 +40,7 @@ export interface FormField {
     apiByIdIdKey?: string;
     apiByIdValueKey?: string;
     apiByIdLabelKey?: string;
+
+    // for mapping with new key for submit
+    submitKey?: string;
 }

@@ -2,6 +2,7 @@ import React from "react";
 import styles from "../../create/style/DynamicCreateForm.module.css";
 import type { FormSection } from "../../../lib/FormSection";
 import { RepeatableFieldRenderer } from "./RepeatableFieldRenderer";
+import {FiPlus, FiTrash2} from "react-icons/fi";
 
 interface Props {
     section: FormSection;
@@ -38,16 +39,15 @@ export function RepeatableSection({
         }));
     }
 
+
     return (
         <div className={styles.card}>
             <h2 className={styles.sectionTitle}>{section.title}</h2>
 
             {items.map((item, index) => (
-                <div key={index} style={{ marginBottom: 24 }}>
-                    <strong>Item #{index + 1}</strong>
-
+                <div key={index} className={styles.repeatableItem}>
                     <div className={styles.grid}>
-                        {section.fields.map((field) => (
+                        {section.fields.map(field => (
                             <div key={field.name} className={styles.formGroup}>
                                 <label className={styles.label}>
                                     {field.label}
@@ -60,8 +60,8 @@ export function RepeatableSection({
                                     section={section}
                                     field={field}
                                     value={item[field.name]}
-                                    onChange={(val) =>
-                                        setFormData((prev) => {
+                                    onChange={val =>
+                                        setFormData(prev => {
                                             const next = [...(prev[section.name] || [])];
                                             next[index] = {
                                                 ...next[index],
@@ -81,19 +81,31 @@ export function RepeatableSection({
                         ))}
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={() => removeItem(index)}
-                        style={{ marginTop: 8, color: "red" }}
-                    >
-                        Remove Item
-                    </button>
+                    {/* Item actions */}
+                    <div className={styles.itemActions}>
+                        <button
+                            type="button"
+                            className="removeBtn"
+                            onClick={() => removeItem(index)}
+                            title="Remove item"
+                        >
+                            <FiTrash2 />
+                        </button>
+                    </div>
                 </div>
             ))}
 
-            <button type="button" onClick={addItem}>
-                + Add Item
-            </button>
+            {/* Add Item */}
+            <div className={styles.addBtnWrapper}>
+                <button
+                    type="button"
+                    className="btn btn-outline btn-md"
+                    onClick={addItem}
+                >
+                    <FiPlus style={{ marginRight: 8 }} />
+                    Add Item
+                </button>
+            </div>
         </div>
     );
 }

@@ -11,15 +11,17 @@ export const CategoryForm: FormSection[] = [
             { type: "text", name: "name", label: "Category Name", required: true },
             {
                 type: "api-select",
-                name: "parentCategoryExternalId",
+                name: "categoryName",
                 label: "Assign Parent Category",
                 api: "/companies/{companyId}/categories/lookup",   // GET list of categories
                 valueKey: "externalId",         // backend response field mapping
-                labelKey: "name",       // backend response field mapping
+                labelKey: "categoryName",       // backend response field mapping
                 required: false,
                 dependsOn: "__company__", // 🔥 special marker
                 // 🔥 UPDATE-ONLY HELPERS
-                updateShowField: "parentCategoryName"
+                updateShowField: "parentCategoryName",
+                submitKey: "parentCategoryExternalId",
+
             }
         ]
     },

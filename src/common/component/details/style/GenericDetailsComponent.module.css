@@ -1,16 +1,22 @@
+/* ==============================
+   CONTAINER & HEADER
+============================== */
+
 .container {
     padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 14px;
 }
 
 .headerIcon {
-    font-size: 28px;
+    font-size: 26px;
     background: var(--primary-light);
     color: var(--primary);
     padding: 10px;
@@ -23,23 +29,48 @@
     color: var(--text);
 }
 
+
+/* ==============================
+   CARD (SECTION)
+============================== */
+
 .card {
     background: var(--surface);
-    padding: 24px;
+    padding: 22px 26px;
     border-radius: var(--radius);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
+
+/* Section title inside card */
+.sectionTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+
+/* ==============================
+   DETAILS GRID (KEY / VALUE)
+============================== */
 
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 40px;
+    gap: 18px 40px;
 }
 
 .gridItem {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    align-items: center;
+    gap: 12px;
 }
 
 .label {
@@ -47,40 +78,66 @@
     font-weight: 600;
     color: var(--text-light);
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: .4px;
 }
 
 .value {
     font-size: 15px;
-    color: var(--text);
     font-weight: 500;
+    color: var(--text);
+    word-break: break-word;
 }
 
-/* Responsive */
+
+/* ==============================
+   TABLE (REPEATABLE SECTIONS)
+============================== */
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+}
+
+.table thead th {
+    background: var(--primary-light);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.table tbody td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
 @media (max-width: 768px) {
+
     .grid {
         grid-template-columns: 1fr;
     }
-}
 
-/* ICON TYPES — controlled by name passed in props */
+    .gridItem {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
 
-.icon-company::before {
-    content: "🏢";
-}
-
-.icon-user::before {
-    content: "👤";
-}
-
-.icon-plan::before {
-    content: "📦";
-}
-
-.icon-security::before {
-    content: "🔒";
-}
-
-.icon-default::before {
-    content: "📄";
+    .label {
+        font-size: 12px;
+    }
 }

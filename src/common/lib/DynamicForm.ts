@@ -42,6 +42,8 @@ export function updateFieldValue(
     fieldName: string,
     value: any
 ) {
+
+    console.log("updateFieldValue", fieldName, value);
     setFormData((prev) => {
         if (section.objectKey) {
             return {

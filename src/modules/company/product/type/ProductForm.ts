@@ -22,7 +22,10 @@ export const ProductForm: FormSection[] = [
                 required: false,
                 dependsOn: "__company__", // 🔥 special marker
                 // 🔥 UPDATE-ONLY HELPERS
-                updateShowField: "categoryName"
+                updateShowField: "categoryName",
+                // 🔹 BACKEND PAYLOAD KEY
+                submitKey: "categoryExternalId",
+
             }
         ]
     },

@@ -32,9 +32,16 @@ export function ApiSelectField({
         <select
             className={styles.select}
             required={required}
-            value={value || ""}
             disabled={isDisabled}
-            onChange={(e) => onChange(e.target.value)}
+            value={value ?? ""}
+            onChange={(e) => {
+                const selected = options.find(
+                    o => o[valueKey] === e.target.value
+                );
+                console.log("selected", selected);
+                console.log("valueKey", labelKey);
+                onChange(selected); // 🔥 FULL OBJECT
+            }}
         >
             <option value="">Select</option>
 
@@ -44,6 +51,7 @@ export function ApiSelectField({
             )}
 
             {options.map((opt) => (
+
                 <option
                     key={opt[valueKey]}
                     value={opt[valueKey]}
