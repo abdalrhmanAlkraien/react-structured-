@@ -21,7 +21,6 @@ export const CategoryForm: FormSection[] = [
                 // 🔥 UPDATE-ONLY HELPERS
                 updateShowField: "parentCategoryName",
                 submitKey: "parentCategoryExternalId",
-
             }
         ]
     },

@@ -29,7 +29,7 @@ export function CategoryListComponent() {
     ];
 
     const columns: Column<CategoryRow>[] = [
-        {header: "Category Name", accessor: "name"},
+        {header: "Category Name", accessor: "categoryName"},
         {header: "Category ExternalId", accessor: "externalId"},
         {header: "Parent Category Name", accessor: "parentCategoryName"},
         {

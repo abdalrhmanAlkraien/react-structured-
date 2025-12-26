@@ -50,15 +50,19 @@ export function ApiSelectField({
                 <option value={value}>{fallbackLabel}</option>
             )}
 
-            {options.map((opt) => (
 
-                <option
-                    key={opt[valueKey]}
-                    value={opt[valueKey]}
-                >
-                    {opt[labelKey]}
-                </option>
-            ))}
+            {options.map((opt) => {
+                console.log("opt:", opt);
+
+                return (
+                    <option
+                        key={opt[valueKey]}
+                        value={opt[valueKey]}
+                    >
+                        {opt[labelKey]}
+                    </option>
+                );
+            })}
         </select>
     );
 }

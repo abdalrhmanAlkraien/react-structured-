@@ -18,7 +18,7 @@ export const ProductForm: FormSection[] = [
                 label: "Assign Category",
                 api: "/companies/{companyId}/categories/lookup",   // GET list of categories
                 valueKey: "externalId",         // backend response field mapping for get the externalId
-                labelKey: "name",       // show the value drop down list
+                labelKey: "categoryName",       // show the value drop down list
                 required: false,
                 dependsOn: "__company__", // 🔥 special marker
                 // 🔥 UPDATE-ONLY HELPERS

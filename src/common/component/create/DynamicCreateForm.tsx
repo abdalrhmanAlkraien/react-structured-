@@ -117,9 +117,13 @@ export function DynamicCreateForm({
                                 ? formData[field.updateShowField]
                                 : undefined
                         }
-                        onChange={(val) =>
-                            updateFieldValue(setFormData, section, field.name, val)
-                        }
+                        onChange={(selected) => {
+                            if (!selected) return;
+
+                            const submitValue = selected[field.valueKey!];  // "CAT-001"
+                            // 1️⃣ UI value
+                            updateFieldValue(setFormData, section, field.name, submitValue);
+                        }}
                     />
                 );
             }
